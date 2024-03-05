@@ -4,76 +4,63 @@ mod generate_array;
 mod plotter;
 
 use std::vec;
+use std::thread;
+use rayon::prelude::*;
 
 use algorithms::selection::SelectionSort;
 use algorithms::insertion::InsertionSort;
 use algorithms::merge::MergeSort;
-use types::{Sort, AlgorithmData}; // Import the Sort trait
+use types::{Algorithm, AlgorithmData}; // Import the Sort trait
 use plotter::plot_comparisons;
-use generate_array::{generate_random, generate_sorted, generate_reversed};
+
+const STEP_SIZE: usize = 200;
 
 fn main() {
     let selection = SelectionSort::new();
     let insertion = InsertionSort::new();
     let merge = MergeSort::new();
 
-    plot_data(&selection, vec![
-        AlgorithmData {
-            name: "selection-avg".to_string(),
-            generator: generate_random,
-        },
-        AlgorithmData {
-            name: "selection-best".to_string(),
-            generator: generate_sorted,
-        },
-        AlgorithmData {
-            name: "selection-worst".to_string(),
-            generator: generate_reversed,
-        },
-    ]);
+    let selection_thread = thread::spawn(|| {
+        let _ = test_algorithm(selection);
+    });
 
-    plot_data(&insertion, vec![
-        AlgorithmData {
-            name: "insertion-avg".to_string(),
-            generator: generate_random,
-        },
-        AlgorithmData {
-            name: "insertion-best".to_string(),
-            generator: generate_sorted,
-        },
-        AlgorithmData {
-            name: "insertion-worst".to_string(),
-            generator: generate_reversed,
-        },
-    ]);
+    let insertion_thread = thread::spawn(|| {
+        let _ = test_algorithm(insertion);
+    });
 
-    plot_data(&merge, vec![
-        AlgorithmData {
-            name: "merge-avg".to_string(),
-            generator: generate_array::generate_random,
-        },
-        AlgorithmData {
-            name: "merge-best".to_string(),
-            generator: generate_array::generate_sorted,
-        },
-        AlgorithmData {
-            name: "merge-worst".to_string(),
-            generator: generate_array::generate_reversed,
-        },
-    ]);
+    let merge_thread = thread::spawn(|| {
+        let _ = test_algorithm(merge);
+    });
+
+    selection_thread.join().unwrap();
+    insertion_thread.join().unwrap();
+    merge_thread.join().unwrap();
 }
 
-fn plot_data<A: Sort<i32>>(sort: &A, cases: Vec<AlgorithmData>) {
-    let mut overall = vec![];
-    for case in cases {
-        let mut data = vec![];
-        let name = case.name.clone();
-        for i in 1..1000 {
-            let mut arr = (case.generator)(i);
-            let comparisons = sort.sort(&mut arr);
-            data.push((i, comparisons));
-        }
-        overall.push(data.clone());
-        plot_comparisons(data, name);
+fn test_algorithm(algorithm: impl Algorithm + Sync) -> Result<(), Box<dyn std::error::Error>> {
+    algorithm.get_cases().into_par_iter().for_each(|case| {
+        println!("Testing {} case: {}", algorithm.get_name(), case.clone().name);
+        test_case(&algorithm, case.clone());
+        println!("Finished {} case: {}", algorithm.get_name(), case.name);
+    });
+
+    Ok(())
+}
+
+fn test_case(
+    algorithm: &(impl Algorithm + Sync),
+    case: AlgorithmData
+) {
+    let mut data = vec![];
+    for i in (0..5000).step_by(STEP_SIZE) {
+        let mut arr = (case.generator)(i);
+        let comparisons = algorithm.sort(&mut arr);
+        data.push((i, comparisons));
     }
+    plot_comparisons(
+        data, 
+        algorithm.get_name(), 
+        case.clone().name, 
+        format!("{}-{}", algorithm.get_name(), case.name)
+    );
 }

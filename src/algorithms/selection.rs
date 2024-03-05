@@ -1,13 +1,15 @@
-use crate::types::Sort;
-pub struct SelectionSort;
+use crate::types::{Algorithm, AlgorithmData};
+use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
 
-impl SelectionSort {
-  pub fn new() -> SelectionSort {
-    SelectionSort
-  }
+pub struct SelectionSort {
+  pub name: String,
 }
 
-impl Sort<i32> for SelectionSort {
+impl Algorithm for SelectionSort {
+  fn new() -> SelectionSort {
+    Self { name: "selection".to_string() }
+  }
+
   fn sort(&self, arr: &mut [i32]) -> usize {
     let mut min_index: usize;
     let mut temp: i32;
@@ -26,5 +28,26 @@ impl Sort<i32> for SelectionSort {
       arr[min_index] = temp;
     }
     comparisons
+  }
+
+  fn get_cases(&self) -> Vec<AlgorithmData> {
+    vec![
+      AlgorithmData {
+        name: "average".to_string(),
+        generator: generate_random,
+      }, 
+      AlgorithmData {
+        name: "best".to_string(),
+        generator: generate_sorted,
+      }, 
+      AlgorithmData {
+        name: "worst".to_string(),
+        generator: generate_reversed,
+      }
+    ]
+  }
+
+  fn get_name(&self) -> String {
+    self.name.clone()
   }
 }

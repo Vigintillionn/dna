@@ -1,18 +1,43 @@
-use crate::types::Sort;
+use crate::types::{Algorithm, AlgorithmData};
+use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
 
-pub struct MergeSort;
-
-impl MergeSort {
-  pub fn new() -> MergeSort {
-    MergeSort
-  }
+pub struct MergeSort {
+  pub name: String
 }
 
-impl Sort<i32> for MergeSort {
+impl Algorithm for MergeSort {
+  fn new() -> MergeSort {
+    Self { name: "merge".to_string() }
+  }
+
   fn sort(&self, arr: &mut [i32]) -> usize {
     let mut aux = arr.to_vec();
+    if arr.len() == 0 {
+      return 0;
+    }
     let comparisons = merge_sort(arr, &mut aux, 0, arr.len() - 1);
     comparisons
+  }
+
+  fn get_cases(&self) -> Vec<AlgorithmData> {
+    vec![
+      AlgorithmData {
+        name: "average".to_string(),
+        generator: generate_random,
+      }, 
+      AlgorithmData {
+        name: "best".to_string(),
+        generator: generate_sorted,
+      }, 
+      AlgorithmData {
+        name: "worst".to_string(),
+        generator: generate_reversed,
+      }
+    ]
+  }
+
+  fn get_name(&self) -> String {
+    self.name.clone()
   }
 }
 
@@ -56,4 +81,3 @@ fn merge(arr: &mut [i32], aux: &mut Vec<i32>, low: usize, mid: usize, high: usiz
 
   comparisons
 }
-

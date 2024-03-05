@@ -1,14 +1,15 @@
-use crate::types::Sort;
+use crate::types::{Algorithm, AlgorithmData};
+use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
 
-pub struct InsertionSort;
-
-impl InsertionSort {
-  pub fn new() -> InsertionSort {
-    InsertionSort
-  }
+pub struct InsertionSort {
+  pub name: String,
 }
 
-impl Sort<i32> for InsertionSort {
+impl Algorithm for InsertionSort {
+  fn new() -> InsertionSort {
+    Self { name: "insertion".to_string() }
+  }
+
   fn sort(&self, arr: &mut [i32]) -> usize {
     let mut comparisons: usize = 0;
     let mut j: i32;
@@ -25,5 +26,26 @@ impl Sort<i32> for InsertionSort {
       arr[(j + 1) as usize] = key;
     }
     comparisons
+  }
+
+  fn get_cases(&self) -> Vec<AlgorithmData> {
+    vec![
+      AlgorithmData {
+        name: "average".to_string(),
+        generator: generate_random,
+      }, 
+      AlgorithmData {
+        name: "best".to_string(),
+        generator: generate_sorted,
+      }, 
+      AlgorithmData {
+        name: "worst".to_string(),
+        generator: generate_reversed,
+      }
+    ]
+  }
+
+  fn get_name(&self) -> String {
+    self.name.clone()
   }
 }
