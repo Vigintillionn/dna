@@ -1,0 +1,2 @@
+# Datastrucures and Algorithms
+This repo contains the code used for my tasks for a class I'm taking, datastructures and algorithms. It is used to plot the amount of comparissons between specific algorithms.
