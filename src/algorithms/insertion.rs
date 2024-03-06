@@ -1,4 +1,4 @@
-use crate::types::{Algorithm, AlgorithmData};
+use crate::types::{Algorithm, AlgorithmData, Expected};
 use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
 
 pub struct InsertionSort {
@@ -33,14 +33,20 @@ impl Algorithm for InsertionSort {
       AlgorithmData {
         name: "average".to_string(),
         generator: generate_random,
+        expected: Expected::Quadratic,
+        factor: 0.25
       }, 
       AlgorithmData {
         name: "best".to_string(),
         generator: generate_sorted,
+        expected: Expected::Linear,
+        factor: 1.0
       }, 
       AlgorithmData {
         name: "worst".to_string(),
         generator: generate_reversed,
+        expected: Expected::Quadratic,
+        factor: 0.5
       }
     ]
   }

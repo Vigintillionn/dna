@@ -10,7 +10,7 @@ use rayon::prelude::*;
 use algorithms::selection::SelectionSort;
 use algorithms::insertion::InsertionSort;
 use algorithms::merge::MergeSort;
-use types::{Algorithm, AlgorithmData}; // Import the Sort trait
+use types::{Algorithm, AlgorithmData};
 use plotter::plot_comparisons;
 
 const STEP_SIZE: usize = 200;
@@ -52,7 +52,7 @@ fn test_case(
     case: AlgorithmData
 ) {
     let mut data = vec![];
-    for i in (0..5000).step_by(STEP_SIZE) {
+    for i in (0..=10000).step_by(STEP_SIZE) {
         let mut arr = (case.generator)(i);
         let comparisons = algorithm.sort(&mut arr);
         data.push((i, comparisons));
@@ -61,6 +61,8 @@ fn test_case(
         data, 
         algorithm.get_name(), 
         case.clone().name, 
-        format!("{}-{}", algorithm.get_name(), case.name)
+        format!("{}-{}", algorithm.get_name(), case.name),
+        case.expected,
+        case.factor
     );
 }

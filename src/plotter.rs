@@ -1,6 +1,15 @@
 use plotters::prelude::*;
 
-pub fn plot_comparisons(data: Vec<(usize, usize)>, name: String, case: String, filename: String) {
+use crate::types::Expected;
+
+pub fn plot_comparisons(
+  data: Vec<(usize, usize)>, 
+  name: String, 
+  case: String, 
+  filename: String,
+  expected: Expected,
+  factor: f64
+) {
   let name_with_extension = format!("plots/{}.png", filename);
   let root = BitMapBackend::new(&name_with_extension, (800, 600)).into_drawing_area();
   root.fill(&WHITE).unwrap();
@@ -34,4 +43,21 @@ pub fn plot_comparisons(data: Vec<(usize, usize)>, name: String, case: String, f
         return EmptyElement::at(c) + Circle::new((0,0), s, st.filled());
     }))
     .unwrap();
+
+  chart
+    .draw_series(LineSeries::new(
+      (0..=max_x).map(|x| (x, apply_expected(expected.clone(), factor, x as f64))),
+      &RED
+    ))
+    .unwrap();
+}
+
+fn apply_expected(expected: Expected, factor: f64, x: f64) -> usize {
+  let res = match expected {
+    Expected::NLogN => x * x.log2(),
+    Expected::Quadratic => x * x,
+    Expected::Linear => x,
+  };
+
+  (res * factor) as usize
 }

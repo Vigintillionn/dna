@@ -1,7 +1,16 @@
 #[derive(Clone)]
+pub enum Expected {
+  Linear,
+  Quadratic,
+  NLogN,
+}
+
+#[derive(Clone)]
 pub struct AlgorithmData {
   pub name: String,
   pub generator: fn(usize) -> Vec<i32>,
+  pub expected: Expected,
+  pub factor: f64,
 }
 
 pub trait Algorithm {
