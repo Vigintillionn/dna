@@ -5,6 +5,7 @@ mod plotter;
 
 use std::vec;
 use std::thread;
+use std::time::Instant;
 use rayon::prelude::*;
 
 use algorithms::selection::SelectionSort;
@@ -32,9 +33,12 @@ fn main() {
         let _ = test_algorithm(merge);
     });
 
+    let start = Instant::now();
     selection_thread.join().unwrap();
     insertion_thread.join().unwrap();
     merge_thread.join().unwrap();
+    let duration = start.elapsed();
+    println!("Time elapsed is: {:?}", duration);
 }
 
 fn test_algorithm(algorithm: impl Algorithm + Sync) -> Result<(), Box<dyn std::error::Error>> {
@@ -62,7 +66,6 @@ fn test_case(
         algorithm.get_name(), 
         case.clone().name, 
         format!("{}-{}", algorithm.get_name(), case.name),
-        case.expected,
-        case.factor
+        case.expected
     );
 }

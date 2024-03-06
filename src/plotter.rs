@@ -1,14 +1,13 @@
 use plotters::prelude::*;
 
-use crate::types::Expected;
+use crate::types::{Expected, ExpectedData};
 
 pub fn plot_comparisons(
   data: Vec<(usize, usize)>, 
   name: String, 
   case: String, 
   filename: String,
-  expected: Expected,
-  factor: f64
+  expected: ExpectedData,
 ) {
   let name_with_extension = format!("plots/{}.png", filename);
   let root = BitMapBackend::new(&name_with_extension, (800, 600)).into_drawing_area();
@@ -46,7 +45,7 @@ pub fn plot_comparisons(
 
   chart
     .draw_series(LineSeries::new(
-      (0..=max_x).map(|x| (x, apply_expected(expected.clone(), factor, x as f64))),
+      (0..=max_x).map(|x| (x, apply_expected(expected.clone().function, expected.clone().factor, x as f64))),
       &RED
     ))
     .unwrap();

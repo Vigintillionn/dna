@@ -1,4 +1,4 @@
-use crate::types::{Algorithm, AlgorithmData, Expected};
+use crate::types::{Algorithm, AlgorithmData, Expected, ExpectedData};
 use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
 
 pub struct SelectionSort {
@@ -35,20 +35,26 @@ impl Algorithm for SelectionSort {
       AlgorithmData {
         name: "average".to_string(),
         generator: generate_random,
-        expected: Expected::Quadratic,
-        factor: 0.5,
+        expected: ExpectedData {
+          function: Expected::Quadratic,
+          factor: 0.5,
+        }
       }, 
       AlgorithmData {
         name: "best".to_string(),
         generator: generate_sorted,
-        expected: Expected::Quadratic,
-        factor: 0.5,
+        expected: ExpectedData {
+          function: Expected::Quadratic,
+          factor: 0.5,
+        }
       }, 
       AlgorithmData {
         name: "worst".to_string(),
         generator: generate_reversed,
-        expected: Expected::Quadratic,
-        factor: 0.5,
+        expected: ExpectedData {
+          function: Expected::Quadratic,
+          factor: 0.5,
+        }
       }
     ]
   }
