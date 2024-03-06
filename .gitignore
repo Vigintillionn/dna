@@ -1,1 +1,4 @@
 /target
+/reports/*.aux
+/reports/*.log
+/reports/*.pdf
