@@ -31,10 +31,10 @@ impl Algorithm for InsertionSort {
     Self { name: "insertion".to_string() }
   }
 
-  fn sort(&self, arr: &mut [i32]) -> usize {
+  fn sort<T: Ord + Copy>(&self, arr: &mut [T]) -> usize {
     let mut comparisons: usize = 0;
     let mut j: i32;
-    let mut key: i32;
+    let mut key: T;
     // loop through the array
     for i in 1..arr.len() {
       key = arr[i];

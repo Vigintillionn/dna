@@ -27,7 +27,7 @@ impl Algorithm for MergeSort {
     Self { name: "merge".to_string() }
   }
 
-  fn sort(&self, arr: &mut [i32]) -> usize {
+  fn sort<T: Ord + Copy>(&self, arr: &mut [T]) -> usize {
     let mut aux = arr.to_vec();
     if arr.len() == 0 {
       return 0;
@@ -71,7 +71,7 @@ impl Algorithm for MergeSort {
   }
 }
 
-fn merge_sort(arr: &mut [i32], aux: &mut Vec<i32>, low: usize, high: usize) -> usize {
+fn merge_sort<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, high: usize) -> usize {
   let mut comparisons: usize = 0;
   // Base case: if low is greater than or equal to high, the array is sorted
   if low < high {
@@ -84,7 +84,7 @@ fn merge_sort(arr: &mut [i32], aux: &mut Vec<i32>, low: usize, high: usize) -> u
   comparisons
 }
 
-fn merge(arr: &mut [i32], aux: &mut Vec<i32>, low: usize, mid: usize, high: usize) -> usize  {
+fn merge<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, mid: usize, high: usize) -> usize  {
   // Copy the array into the auxiliary array
   for i in low..=high {
     aux[i] = arr[i];

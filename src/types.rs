@@ -20,7 +20,7 @@ pub struct AlgorithmData {
 
 pub trait Algorithm {
   fn new() -> Self;
-  fn sort(&self, arr: &mut [i32]) -> usize;
+  fn sort<T: Ord + Copy>(&self, arr: &mut [T]) -> usize;
   fn get_cases(&self) -> Vec<AlgorithmData>;
   fn get_name(&self) -> String;
 }

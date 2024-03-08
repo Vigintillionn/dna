@@ -27,9 +27,9 @@ impl Algorithm for SelectionSort {
     Self { name: "selection".to_string() }
   }
 
-  fn sort(&self, arr: &mut [i32]) -> usize {
+  fn sort<T: Ord + Copy>(&self, arr: &mut [T]) -> usize {
     let mut min_index: usize;
-    let mut temp: i32;
+    let mut temp: T;
     let mut comparisons: usize = 0;
 
     // One by one move boundary of unsorted subarray
