@@ -44,14 +44,14 @@ impl Algorithm for MergeSort {
         generator: generate_random,
         expected: ExpectedData {
           function: Expected::NLogN,
-          factor: 0.5,
+          factor: 0.75,
         }
       }, 
       AlgorithmData {
         name: "best".to_string(),
         generator: generate_sorted,
         expected: ExpectedData {
-          function: Expected::Quadratic,
+          function: Expected::NLogN,
           factor: 0.5,
         }
       }, 
@@ -59,7 +59,7 @@ impl Algorithm for MergeSort {
         name: "worst".to_string(),
         generator: generate_reversed,
         expected: ExpectedData {
-          function: Expected::Quadratic,
+          function: Expected::NLogN,
           factor: 1.0,
         }
       }
