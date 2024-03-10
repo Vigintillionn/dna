@@ -14,6 +14,7 @@ use algorithms::selection::SelectionSort;
 use plotter::plot_comparisons;
 use types::{Algorithm, AlgorithmData};
 
+const MAX_SIZE_TO_TEST: usize = 10000;
 const STEP_SIZE: usize = 200;
 
 fn main() {
@@ -57,12 +58,21 @@ fn test_algorithm(algorithm: impl Algorithm + Sync) -> Result<(), Box<dyn std::e
 }
 
 fn test_case(algorithm: &(impl Algorithm + Sync), case: AlgorithmData) {
-    let mut data = vec![];
+    let mut data: Vec<(usize, Vec<usize>)> = vec![];
     // Test each array length
-    for i in (0..=10000).step_by(STEP_SIZE) {
-        let mut arr = (case.generator)(i);
-        let comparisons = algorithm.sort(&mut arr);
-        data.push((i, comparisons));
+    for i in (0..=MAX_SIZE_TO_TEST).step_by(STEP_SIZE) {
+        let mut results = vec![];
+        for _ in 0..5 {
+            let mut arr = (case.generator)(i);
+            let comparisons = algorithm.sort(&mut arr);
+            results.push(comparisons);
+        }
+        // (0..5).into_par_iter().for_each(|_| {
+        //     let mut arr = (case.generator)(i);
+        //     let comparisons = algorithm.sort(&mut arr);
+        //     results.push(comparisons);
+        // });
+        data.push((i, results));
     }
     // Plot the results
     plot_comparisons(
