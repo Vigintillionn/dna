@@ -59,7 +59,8 @@ impl Algorithm for SelectionSort {
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.5,
-        }
+        },
+        iterations: 1
       }, 
       AlgorithmData {
         name: "best".to_string(),
@@ -67,7 +68,8 @@ impl Algorithm for SelectionSort {
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.5,
-        }
+        },
+        iterations: 1
       }, 
       AlgorithmData {
         name: "worst".to_string(),
@@ -75,7 +77,8 @@ impl Algorithm for SelectionSort {
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.5,
-        }
+        },
+        iterations: 1
       }
     ]
   }
