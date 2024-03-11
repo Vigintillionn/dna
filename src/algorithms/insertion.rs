@@ -1,5 +1,5 @@
 use crate::types::{Algorithm, AlgorithmData, Expected, ExpectedData};
-use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
+use crate::generate_array::{generate_random, generate_sorted, generate_reversed, generate_with_dupes, generate_nearly_sorted};
 
 /*
   Insertion sort is a simple sorting algorithm that builds the final sorted array (or list) one item at a time.
@@ -60,7 +60,8 @@ impl Algorithm for InsertionSort {
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.25,
-        }
+        },
+        iterations: 10
       }, 
       AlgorithmData {
         name: "best".to_string(),
@@ -68,7 +69,8 @@ impl Algorithm for InsertionSort {
         expected: ExpectedData {
           function: Expected::Linear,
           factor: 1.0,
-        }
+        },
+        iterations: 1
       }, 
       AlgorithmData {
         name: "worst".to_string(),
@@ -76,7 +78,26 @@ impl Algorithm for InsertionSort {
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.5,
-        }
+        },
+        iterations: 1
+      },
+      AlgorithmData {
+        name: "dupes".to_string(),
+        generator: generate_with_dupes,
+        expected: ExpectedData {
+          function: Expected::Quadratic,
+          factor: 0.25,
+        },
+        iterations: 10
+      },
+      AlgorithmData {
+        name: "nearly-sorted".to_string(),
+        generator: |i| generate_nearly_sorted(i, 10),
+        expected: ExpectedData {
+          function: Expected::Linear,
+          factor: 3.25,
+        },
+        iterations: 10
       }
     ]
   }
