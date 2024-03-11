@@ -38,20 +38,7 @@ pub fn plot_comparisons(
     .axis_desc_style(("sans-serif", 15))
     .draw()
     .unwrap();
-
-  // chart
-  //   .draw_series(PointSeries::of_element(x.into_iter().zip(y.into_iter()), 3, &BLUE, &|c, s, st| {
-  //       let avg_y = (c.1.iter().sum::<usize>() as f64 / c.1.len() as f64) as usize;
-  //       return EmptyElement::at((c.0, avg_y)) + Circle::new((0,0), s, st.filled());
-  //   }))
-  //   .unwrap();
-
-  // chart.draw_series(LineSeries::new(
-  //     data.iter().map(|(x, y)| (*x, y.iter().sum::<usize>() / y.len())),
-  //     &BLUE,
-  // ));
-
-
+  
   chart
     .draw_series(
       data.into_iter().map(|(x, y)| {
@@ -71,7 +58,7 @@ pub fn plot_comparisons(
     .unwrap().label("Expected").legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
 }
 
-fn apply_expected(expected: Expected, factor: f64, x: f64) -> usize {
+pub fn apply_expected(expected: Expected, factor: f64, x: f64) -> usize {
   let res = match expected {
     Expected::NLogN => x * x.log2(),
     Expected::Quadratic => x * x,
