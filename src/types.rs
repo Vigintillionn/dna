@@ -15,7 +15,8 @@ pub struct ExpectedData {
 pub struct AlgorithmData {
   pub name: String,
   pub generator: fn(usize) -> Vec<i32>,
-  pub expected: ExpectedData
+  pub expected: ExpectedData,
+  pub iterations: usize,
 }
 
 pub trait Algorithm {
