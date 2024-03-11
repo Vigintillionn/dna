@@ -16,7 +16,6 @@ pub fn plot_comparisons(
   let (x, y): (Vec<usize>, Vec<Vec<usize>>) = data.clone().into_iter().unzip();
 
   let max_x = *x.iter().max().unwrap();
-  // let max_y = *y.iter().max().unwrap();
   let max_y = *y.iter().map(|v| v.iter().max().unwrap()).max().unwrap();
 
   let title = format!("{} - {}", name, case);
@@ -38,7 +37,7 @@ pub fn plot_comparisons(
     .axis_desc_style(("sans-serif", 15))
     .draw()
     .unwrap();
-  
+
   chart
     .draw_series(
       data.into_iter().map(|(x, y)| {
@@ -48,14 +47,14 @@ pub fn plot_comparisons(
 
         return ErrorBar::new_vertical(x, *yl, *ym, *yh, BLUE.filled(), 4)
       }),
-    ).unwrap().label("Measured").legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
+    ).unwrap().label("Measured");//.legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
 
   chart
     .draw_series(LineSeries::new(
       (0..=max_x).map(|x| (x, apply_expected(expected.clone().function, expected.clone().factor, x as f64))),
       &RED
     ))
-    .unwrap().label("Expected").legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
+    .unwrap().label("Expected");//.legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
 }
 
 pub fn apply_expected(expected: Expected, factor: f64, x: f64) -> usize {
