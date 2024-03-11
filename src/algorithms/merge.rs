@@ -1,5 +1,5 @@
 use crate::types::{Algorithm, AlgorithmData, Expected, ExpectedData};
-use crate::generate_array::{generate_random, generate_sorted, generate_reversed};
+use crate::generate_array::{generate_random, generate_sorted, generate_interleaved};
 
 /*
   Merge sort is a divide and conquer algorithm that divides the input array into two halves, 
@@ -33,7 +33,9 @@ impl Algorithm for MergeSort {
       return 0;
     }
     // Outsource the actual sorting to a helper function
-    let comparisons = merge_sort(arr, &mut aux, 0, arr.len() - 1);
+    let mut comparisons: usize = 0;
+    merge_sort(arr, &mut aux, 0, arr.len() - 1, &mut comparisons);
+    // merge_sort(arr, &mut comparisons);
     comparisons
   }
 
@@ -44,8 +46,9 @@ impl Algorithm for MergeSort {
         generator: generate_random,
         expected: ExpectedData {
           function: Expected::NLogN,
-          factor: 0.75,
-        }
+          factor: 0.87,
+        },
+        iterations: 10
       }, 
       AlgorithmData {
         name: "best".to_string(),
@@ -53,15 +56,17 @@ impl Algorithm for MergeSort {
         expected: ExpectedData {
           function: Expected::NLogN,
           factor: 0.5,
-        }
+        },
+        iterations: 1
       }, 
       AlgorithmData {
         name: "worst".to_string(),
-        generator: generate_reversed,
+        generator: generate_interleaved,
         expected: ExpectedData {
           function: Expected::NLogN,
           factor: 1.0,
-        }
+        },
+        iterations: 10
       }
     ]
   }
@@ -71,20 +76,20 @@ impl Algorithm for MergeSort {
   }
 }
 
-fn merge_sort<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, high: usize) -> usize {
-  let mut comparisons: usize = 0;
+fn merge_sort<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, high: usize, comparisons: &mut usize) -> usize {
+  // let mut comparisons: usize = 0;
   // Base case: if low is greater than or equal to high, the array is sorted
   if low < high {
-    let mid = (low + high) / 2;
+    let mid = low + (high - low) / 2;
     // Recursively sort the left and right halves
-    comparisons += merge_sort(arr, aux, low, mid);
-    comparisons += merge_sort(arr, aux, mid + 1, high);
-    comparisons += merge(arr, aux, low, mid, high);
+    merge_sort(arr, aux, low, mid, comparisons);
+    merge_sort(arr, aux, mid + 1, high, comparisons);
+    merge(arr, aux, low, mid, high, comparisons);
   }
-  comparisons
+  *comparisons
 }
 
-fn merge<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, mid: usize, high: usize) -> usize  {
+fn merge<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, mid: usize, high: usize, comparisons: &mut usize)  {
   // Copy the array into the auxiliary array
   for i in low..=high {
     aux[i] = arr[i];
@@ -95,24 +100,26 @@ fn merge<T: Ord + Copy>(arr: &mut [T], aux: &mut Vec<T>, low: usize, mid: usize,
 
   // Compare the elements of the two halves and merge them into the original array
   // The smaller element is always copied into the original array first
-  let mut comparisons: usize = 0;
   for k in low..=high {
+
+
     if i > mid {
       arr[k] = aux[j];
       j += 1;
     } else if j > high {
       arr[k] = aux[i];
       i += 1;
-    } else if aux[j] < aux[i] {
+    } else if less(&aux[j], &aux[i], comparisons) {
       arr[k] = aux[j];
       j += 1;
-      comparisons += 1;
     } else {
       arr[k] = aux[i];
       i += 1;
-      comparisons += 1;
     }
   }
+}
 
-  comparisons
+fn less<T: Ord>(v: &T, w: &T, comparisons: &mut usize) -> bool {
+  *comparisons += 1;
+  v < w
 }
