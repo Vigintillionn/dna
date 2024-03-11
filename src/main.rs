@@ -11,7 +11,7 @@ use std::vec;
 use algorithms::insertion::InsertionSort;
 use algorithms::merge::MergeSort;
 use algorithms::selection::SelectionSort;
-use plotter::plot_comparisons;
+use plotter::{plot_comparisons, apply_expected};
 use types::{Algorithm, AlgorithmData};
 
 const MAX_SIZE_TO_TEST: usize = 10000;
@@ -59,21 +59,21 @@ fn test_algorithm(algorithm: impl Algorithm + Sync) -> Result<(), Box<dyn std::e
 
 fn test_case(algorithm: &(impl Algorithm + Sync), case: AlgorithmData) {
     let mut data: Vec<(usize, Vec<usize>)> = vec![];
+    let mut factors: Vec<f64> = vec![];
     // Test each array length
     for i in (0..=MAX_SIZE_TO_TEST).step_by(STEP_SIZE) {
         let mut results = vec![];
-        for _ in 0..5 {
+        for _ in 0..case.clone().iterations {
             let mut arr = (case.generator)(i);
             let comparisons = algorithm.sort(&mut arr);
             results.push(comparisons);
+            if i > 0 {
+                factors.push(comparisons as f64 / apply_expected(case.expected.clone().function, 1.0, i as f64) as f64);
+            }
         }
-        // (0..5).into_par_iter().for_each(|_| {
-        //     let mut arr = (case.generator)(i);
-        //     let comparisons = algorithm.sort(&mut arr);
-        //     results.push(comparisons);
-        // });
         data.push((i, results));
     }
+    println!("Factor for {} - {}: {}", algorithm.get_name(), case.name, factors.iter().sum::<f64>() / factors.len() as f64);
     // Plot the results
     plot_comparisons(
         data,
