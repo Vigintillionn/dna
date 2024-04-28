@@ -8,6 +8,7 @@ pub fn plot_comparisons(
   case: String, 
   filename: String,
   expected: ExpectedData,
+  plots: Vec<fn(usize) -> usize>
 ) {
   let name_with_extension = format!("plots/{}.png", filename);
   let root = BitMapBackend::new(&name_with_extension, (1200, 1000)).into_drawing_area();
@@ -55,6 +56,15 @@ pub fn plot_comparisons(
       &RED
     ))
     .unwrap().label("Expected");//.legend(|(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], BLUE));
+
+  for plot in plots {
+    print!("Plotting");
+    chart
+      .draw_series(LineSeries::new(
+        (0..=max_x).map(|x| (x, plot(x))),
+        &GREEN
+      )).unwrap();
+  }
 }
 
 pub fn apply_expected(expected: Expected, factor: f64, x: f64) -> usize {

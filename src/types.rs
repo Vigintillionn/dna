@@ -1,3 +1,5 @@
+use plotters::prelude::Color;
+
 #[derive(Clone)]
 pub enum Expected {
   Linear,
@@ -11,12 +13,14 @@ pub struct ExpectedData {
   pub factor: f64,
 }
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct AlgorithmData {
-  pub name: String,
+  pub name: Box<String>,
   pub generator: fn(usize) -> Vec<i32>,
   pub expected: ExpectedData,
   pub iterations: usize,
+  pub calculate_distance: bool,
+  pub plots: Vec<fn(usize) -> usize>
 }
 
 pub trait Algorithm {

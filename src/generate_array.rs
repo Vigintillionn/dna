@@ -1,5 +1,10 @@
 use rand::prelude::SliceRandom;
 
+pub fn less<T: Ord>(a: T, b: T, comparisons: &mut usize) -> bool {
+  *comparisons += 1;
+  a < b
+}
+
 pub fn generate_random(length: usize) -> Vec<i32> {
   let mut arr: Vec<i32> = Vec::new();
   for _ in 0..length {
@@ -94,4 +99,24 @@ fn make_interleaved(arr: &mut [i32], l: usize, r: usize) {
       arr[i + j] = right[j];
     }
   }
+}
+
+// https://stackoverflow.com/questions/32556521/java-quicksort-best-case-array-generation
+pub fn quick_best(length: usize) -> Vec<i32> {
+  let mut sorted = (1..=length).map(|x| x as i32).collect();
+  quick_best_rec(&mut sorted, 0, length);
+  sorted
+}
+
+fn quick_best_rec(array: &mut Vec<i32>, start: usize, end: usize) {
+  let count = end - start;
+  if count < 3 {
+      return;
+  }
+
+  let middle = start + (count - 1) / 2;
+
+  quick_best_rec(array, start, middle);
+  array.swap(start as usize, middle as usize);
+  quick_best_rec(array, middle + 1, end);
 }

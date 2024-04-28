@@ -55,49 +55,59 @@ impl Algorithm for InsertionSort {
   fn get_cases(&self) -> Vec<AlgorithmData> {
     vec![
       AlgorithmData {
-        name: "average".to_string(),
+        name: Box::new(String::from("Average")),
         generator: generate_random,
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.25,
         },
-        iterations: 10
+        iterations: 10,
+        calculate_distance: false,
+        plots: vec![]
       }, 
       AlgorithmData {
-        name: "best".to_string(),
+        name: Box::new(String::from("Best")),
         generator: generate_sorted,
         expected: ExpectedData {
           function: Expected::Linear,
           factor: 1.0,
         },
-        iterations: 1
+        iterations: 1,
+        calculate_distance: false,
+        plots: vec![]
       }, 
       AlgorithmData {
-        name: "worst".to_string(),
+        name: Box::new(String::from("Worst")),
         generator: generate_reversed,
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.5,
         },
-        iterations: 1
+        iterations: 1,
+        calculate_distance: false,
+        plots: vec![]
       },
       AlgorithmData {
-        name: "dupes".to_string(),
+        name: Box::new(String::from("Dupes")),
         generator: generate_with_dupes,
         expected: ExpectedData {
           function: Expected::Quadratic,
           factor: 0.25,
         },
-        iterations: 10
+        iterations: 10,
+        calculate_distance: false,
+        plots: vec![]
       },
       AlgorithmData {
-        name: "nearly-sorted".to_string(),
-        generator: |i| generate_nearly_sorted(i, 10),
+        name: Box::new(String::from("Nearly-sorted")),
+        generator: |i| generate_nearly_sorted(i, 100),
         expected: ExpectedData {
           function: Expected::Linear,
-          factor: 3.25,
+          factor: 25.74,
         },
-        iterations: 10
+        iterations: 10,
+        calculate_distance: true,
+        plots: vec![]
       }
     ]
   }

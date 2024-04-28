@@ -42,31 +42,39 @@ impl Algorithm for MergeSort {
   fn get_cases(&self) -> Vec<AlgorithmData> {
     vec![
       AlgorithmData {
-        name: "average".to_string(),
+        name: Box::new(String::from("Average")),
         generator: generate_random,
         expected: ExpectedData {
           function: Expected::NLogN,
           factor: 0.87,
         },
-        iterations: 10
+        iterations: 10,
+        calculate_distance: false,
+        plots: vec![]
       }, 
       AlgorithmData {
-        name: "best".to_string(),
+        name: Box::new(String::from("Best")),
         generator: generate_sorted,
         expected: ExpectedData {
           function: Expected::NLogN,
           factor: 0.5,
         },
-        iterations: 1
+        iterations: 1,
+        calculate_distance: false,
+        plots: vec![]
       }, 
       AlgorithmData {
-        name: "worst".to_string(),
+        name: Box::new(String::from("Worst")),
         generator: generate_interleaved,
         expected: ExpectedData {
           function: Expected::NLogN,
           factor: 1.0,
         },
-        iterations: 10
+        iterations: 10,
+        calculate_distance: false,
+        plots: vec![
+          |x| 10 * x * x
+        ]
       }
     ]
   }
