@@ -19,7 +19,7 @@ pub fn test_sorting_algorithm(alg_name: &str, funcs: Vec<(SortFunction<i32>, RGB
         test_case(&alg_name, &funcs, case);
         let duration = start.elapsed();
 
-        println!("{} | Finished case: {} - took {}", alg_name, case_name, format!("{:?}", duration));
+        println!("{alg_name} | Finished case: {case_name} - took {duration:?}");
     });
 }
 
