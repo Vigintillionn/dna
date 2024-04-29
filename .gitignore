@@ -1,2 +1,5 @@
-target/
-.vscode/
+/target
+/.vscode
+/reports/*.aux
+/reports/*.log
+/reports/*.pdf
