@@ -27,7 +27,11 @@ pub fn plot_case(
 
   // Find the maximum x and y values
   let max_x = *x.iter().max().unwrap();
-  let max_y = y.iter().flat_map(|v| v.iter()).copied().fold(f64::NEG_INFINITY, |max, x| x.max(max));
+  let max_y = y.iter()
+    .flat_map(|v| v.iter())
+    .copied()
+    .reduce(|a, b| a.max(b))
+    .unwrap_or(0.0);
 
   let mut max_candidates = vec![max_y];
   for plot in &plots {
@@ -69,9 +73,9 @@ pub fn plot_case(
     chart
     .draw_series(
       d.0.into_iter().map(|(x, y)| {
-        let yl = y.iter().copied().fold(f64::INFINITY, |min, x| x.min(min));
+        let yl = y.iter().copied().reduce(|a, b| a.max(b)).unwrap_or(0.0);
         let ym = &y[y.len() / 2];
-        let yh = y.iter().copied().fold(f64::NEG_INFINITY, |max, x| x.max(max));
+        let yh = y.iter().copied().reduce(|a, b| a.max(b)).unwrap_or(0.0);
 
         return ErrorBar::new_vertical(x, yl, *ym, yh, color.filled(), 4)
       }),
