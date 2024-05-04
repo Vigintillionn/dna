@@ -1,12 +1,12 @@
 use plotters::prelude::*;
-use crate::types::Plot;
+use crate::types::{Plot, AlgorithmResult};
 
 pub fn plot_case(
-  data: Vec<(Vec<(usize, Vec<f64>)>, RGBColor, &str)>,
+  results: Vec<AlgorithmResult>, //Vec<(Vec<(usize, Vec<f64>)>, RGBColor, &str)>,
   title: &str,
   filename: &str,
   iterations: usize,
-  plots: Vec<Plot>
+  plots: &Vec<&Plot>
 ) -> Result<(), Box<dyn std::error::Error>> {
   // Name the file with the filename and the extension
   let name_with_extension = format!("out/{}.png", filename);
@@ -16,13 +16,22 @@ pub fn plot_case(
 
   let root = root.titled(title, ("sans-serif", 60))?;
 
+  // let data: Vec<(Vec<(usize, Vec<f64>)>, RGBColor, &str)> = results
+  //   .into_iter()
+  //   .map(|r| (r.data, r.color, &r.name[..]))
+  //   .collect();
+
+  let data: Vec<Vec<(usize, Vec<f64>)>> = results
+    .clone()
+    .into_iter()
+    .map(|r| r.data)
+    .collect();
+
   // Enumerate the data to get the x and y values
   let (x, y): (Vec<usize>, Vec<Vec<f64>>) = data
     .clone()
     .into_iter()
-    .map(|(c, _, _)| c)
     .flatten()
-    .into_iter()
     .unzip();
 
   // Find the maximum x and y values
@@ -34,7 +43,7 @@ pub fn plot_case(
     .unwrap_or(0.0);
 
   let mut max_candidates = vec![max_y];
-  for plot in &plots {
+  for plot in plots {
     let max = (0..=max_x).map(|x| (plot.func)(x)).fold(f64::NEG_INFINITY, |max, x| x.max(max));
     max_candidates.push(max);
   }
@@ -64,22 +73,22 @@ pub fn plot_case(
       .draw_series(LineSeries::new(
         (0..=max_x).map(|x| (x, if x > 0 { (plot.func)(x) } else { 0.0 })),
         plot.color.stroke_width(1),
-      ))?.label(plot.name).legend(move |(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], plot.color));
+      ))?.label(&plot.name).legend(move |(x, y)| PathElement::new(vec![(x, y), (x + 20, y)], plot.color));
   }
 
   // Draw the main chart
-  for d in data {
-    let color: RGBColor = d.1.clone();
+  for r in results {
+    let color: RGBColor = r.color;
     chart
     .draw_series(
-      d.0.into_iter().map(|(x, y)| {
-        let yl = y.iter().copied().reduce(|a, b| a.max(b)).unwrap_or(0.0);
+      r.data.into_iter().map(|(x, y)| {
+        let yl = y.iter().copied().reduce(|a, b| a.min(b)).unwrap_or(0.0);
         let ym = &y[y.len() / 2];
         let yh = y.iter().copied().reduce(|a, b| a.max(b)).unwrap_or(0.0);
 
         return ErrorBar::new_vertical(x, yl, *ym, yh, color.filled(), 4)
       }),
-    )?.label(d.2).legend(move |(x, y)| ErrorBar::new_vertical(x + 10, y - 5, y, y + 5, color.filled(), 4));
+    )?.label(r.name).legend(move |(x, y)| ErrorBar::new_vertical(x + 10, y - 5, y, y + 5, color.filled(), 4));
   }
 
   chart.configure_series_labels().position(SeriesLabelPosition::UpperLeft).background_style(WHITE).label_font(("sans-serif", 20)).border_style(BLACK).draw()?;

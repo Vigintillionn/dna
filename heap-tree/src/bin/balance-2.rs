@@ -60,27 +60,13 @@ fn calculate_reds<T: Ord + Copy>(arr: &mut [T]) -> f64 {
 
 fn get_cases() -> Vec<Case> {
   vec![
-    Case {
-      name: "Black Red".to_string(),
-      generator: Box::new(generate_random),
-      iterations: 100,
-      plots: vec![
-        Plot {
-          color: RGBColor(0, 0, 0),
-          func: Box::new(|x| 0.75 * x as f64),
-          name: "0.75n".to_string()
-        },
-        Plot {
-          color: RGBColor(255, 0, 0),
-          func: Box::new(|x| 0.25 * x as f64),
-          name: "0.25n".to_string()
-        },
-        Plot {
-          color: RGBColor(0, 0, 255),
-          func: Box::new(|_| 333.0 as f64),
-          name: "333".to_string()
-        }
-      ],
-    },
+    Case::new("Black Red")
+      .with_generators(vec![generate_random])
+      .iterations(100)
+      .plots(vec![
+        Plot::new(|x| 0.75 * x as f64, RGBColor(0, 0, 0), "0.75n"),
+        Plot::new(|x| 0.25 * x as f64, RGBColor(255, 0, 0), "0.25n"),
+        Plot::new(|_| 333.0 as f64, RGBColor(0, 0, 255), "333"),
+      ])
   ]
 }

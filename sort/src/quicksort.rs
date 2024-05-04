@@ -1,25 +1,35 @@
-use plotter::functions::less;
+use plotter::functions::{less, swap};
 
-pub fn sort<T: Ord + Copy>(arr: &mut [T]) -> f64 {
+pub fn sort<T: Ord + Copy>(arr: &mut [T], ret_comparisons: bool) -> f64 {
   let mut comparisons: f64 = 0.0;
+  let mut swaps: f64 = 0.0;
   if arr.len() == 0 {
-    return comparisons;
-  } 
-  quicksort(arr, 0, arr.len() - 1, &mut comparisons);
-  comparisons
-}
-
-fn quicksort<T: Ord + Copy>(arr: &mut [T], low: usize, high: usize, comparisons: &mut f64) {
-  if low < high {
-    let pi = hoare_partition(arr, low, high, comparisons);
-    if pi > 0 {
-      quicksort(arr, low, pi - 1, comparisons);
+    if ret_comparisons {
+      return comparisons;
+    } else {
+      return swaps;
     }
-    quicksort(arr, pi + 1, high, comparisons);
+
+  } 
+  quicksort(arr, 0, arr.len() - 1, &mut comparisons, &mut swaps);
+  if ret_comparisons {
+    comparisons
+  } else {
+    swaps
   }
 }
 
-fn hoare_partition<T: Ord + Copy>(arr: &mut [T], low: usize, high: usize, comparisons: &mut f64) -> usize {
+fn quicksort<T: Ord + Copy>(arr: &mut [T], low: usize, high: usize, comparisons: &mut f64, swaps: &mut f64) {
+  if low < high {
+    let pi = hoare_partition(arr, low, high, comparisons, swaps);
+    if pi > 0 {
+      quicksort(arr, low, pi - 1, comparisons, swaps);
+    }
+    quicksort(arr, pi + 1, high, comparisons, swaps);
+  }
+}
+
+fn hoare_partition<T: Ord + Copy>(arr: &mut [T], low: usize, high: usize, comparisons: &mut f64, swaps: &mut f64) -> usize {
   let pivot = arr[low];
   let mut i = low;
   let mut j = high+1;
@@ -46,8 +56,10 @@ fn hoare_partition<T: Ord + Copy>(arr: &mut [T], low: usize, high: usize, compar
     if i >= j {
       break;
     }
-    arr.swap(i, j);
+    // arr.swap(i, j);
+    swap(arr, i, j, swaps);
   }
-  arr.swap(low, j);
+  // arr.swap(low, j);
+  swap(arr, low, j, swaps);
   j
 }

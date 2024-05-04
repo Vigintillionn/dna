@@ -1,6 +1,8 @@
 use plotter::functions::{less, swap};
 
-pub fn sort<T: Ord + Copy>(arr: &mut [T]) -> f64 {
+// pub fn sort<T: Ord + Copy>(arr: &mut [T], ret_comparisons: bool) -> f64 {}
+
+pub fn sort<T: Ord + Copy>(arr: &mut [T], ret_comparisons: bool) -> f64 {
   let mut min_index: usize;
   let mut swaps: f64 = 0.0;
   let mut compares: f64 = 0.0;
@@ -19,6 +21,10 @@ pub fn sort<T: Ord + Copy>(arr: &mut [T]) -> f64 {
     swap(arr, i, min_index, &mut swaps);
   }
 
-  compares
+  if ret_comparisons { 
+    compares
+  } else {
+    swaps
+  }
 }
 

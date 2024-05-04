@@ -1,21 +1,21 @@
-use plotter::functions::less;
+use plotter::functions::{less, swap};
 
-pub fn sort<T: Ord + Copy>(arr: &mut [T]) -> f64 {
+pub fn sort<T: Ord + Copy>(arr: &mut [T], ret_comparisons: bool) -> f64 {
   let mut comparisons: f64 = 0.0;
-  let mut j: i32;
-  let mut key: T;
-  // loop through the array
+  let mut swaps: f64 = 0.0;
+
   for i in 1..arr.len() {
-    key = arr[i];
-    j = i as i32 - 1;
-    comparisons += 1.0;
-    // move elements of arr[0..i-1] that are greater than key to one position ahead of their current position
-    while j >= 0 && less(key, arr[j as usize], &mut comparisons) {
-      arr[(j + 1) as usize] = arr[j as usize];
+    let mut j = i;
+    while j > 0 && less(arr[j], arr[j - 1], &mut comparisons) {
+      swap(arr, j, j-1, &mut swaps);
       j -= 1;
+      swaps += 1.0;
     }
-    // insert the key element at its correct position in the sorted array
-    arr[(j + 1) as usize] = key;
   }
-  comparisons
+
+  if ret_comparisons {
+    comparisons
+  } else {
+    swaps
+  }
 }

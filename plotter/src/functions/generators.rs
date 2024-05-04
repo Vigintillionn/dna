@@ -1,27 +1,33 @@
 use rand::prelude::SliceRandom;
 
 pub fn generate_random(length: usize) -> Vec<i32> {
-  let mut arr: Vec<i32> = Vec::new();
-  for _ in 0..length {
-      arr.push(rand::random::<i32>());
-  }
+  let mut arr: Vec<i32> = (0..length).map(|x| x as i32).collect();
+  shuffle_array(&mut arr);
   arr
+
+  // let mut arr: Vec<i32> = Vec::new();
+  // for _ in 0..length {
+  //     arr.push(rand::random::<i32>());
+  // }
+  // arr
 }
 
 pub fn generate_sorted(length: usize) -> Vec<i32> {
-  let mut arr: Vec<i32> = Vec::new();
-  for i in 0..length {
-      arr.push(i.try_into().unwrap());
-  }
-  arr
+  (0..length).map(|x| x as i32).collect()
+  // let mut arr: Vec<i32> = Vec::new();
+  // for i in 0..length {
+  //     arr.push(i.try_into().unwrap());
+  // }
+  // arr
 }
 
 pub fn generate_reversed(length: usize) -> Vec<i32> {
-  let mut arr: Vec<i32> = Vec::new();
-  for i in (0..length).rev() {
-      arr.push(i.try_into().unwrap());
-  }
-  arr
+  (0..length).rev().map(|x| x as i32).collect()
+  // let mut arr: Vec<i32> = Vec::new();
+  // for i in (0..length).rev() {
+  //     arr.push(i.try_into().unwrap());
+  // }
+  // arr
 }
 
 pub fn generate_interleaved(length: usize) -> Vec<i32> {
@@ -34,14 +40,23 @@ pub fn generate_interleaved(length: usize) -> Vec<i32> {
   arr
 }
 
-pub fn generate_with_dupes(length: usize) -> Vec<i32> {
-  let mut arr: Vec<i32> = Vec::new();
-  let dupes = length / 10;
-  for i in 0..dupes {
-    for _ in 0..10 {
-      arr.push(i.try_into().unwrap());
-    }
-  }
+pub fn generate_with_dupes(length: usize, dupe_amount: usize) -> Vec<i32> {
+  // let mut arr: Vec<i32> = Vec::new();
+  let dupes = length / dupe_amount;
+  // for i in 0..dupes {
+  //   for _ in 0..10 {
+  //     arr.push(i.try_into().unwrap());
+  //   }
+  // }
+  let mut arr = (0..dupes).map(|i| {
+    // (0..10).for_each(|_| {
+    //   arr.push(i as i32);
+    // });
+    (0..dupe_amount).map(|_| i as i32).collect::<Vec<i32>>()
+  })
+  .flatten()
+  .collect();
+
   shuffle_array(&mut arr);
   arr
 }
