@@ -4,4 +4,4 @@ members = [
   "plotter",
   "sort",
   "heap-tree"
-]
+, "hashing"]

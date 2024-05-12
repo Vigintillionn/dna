@@ -25,50 +25,20 @@ fn main() {
         .plots(vec![
           Plot::new(|x| 0.5 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected Worst")
         ]),
+      Case::new("Dupes")
+        .with_generator(|size| generate_with_dupes(size, 10))
+        .iterations(10)
+        .plots(vec![
+          Plot::new(|x| 0.25 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected Dupes")
+        ]),
+      Case::new("Nearly Sorted")
+        .with_generator(|size| generate_nearly_sorted(size, 10))
+        .iterations(10)
+        .plots(vec![
+          Plot::new(|x| 0.25 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected Nearly Sorted")
+        ]),
     ])
     .run()
-    // .plot("insertionsort")
-    .plot_seperate(vec!["insertionsort-average", "insertionsort-best", "insertionsort-worst"])
+    .plot_seperate(vec!["insertionsort-average", "insertionsort-best", "insertionsort-worst", "insertionsort-dupes", "insertionsort-nearly-sorted"])
     .unwrap();
-
-
 }
-
-// fn get_cases() -> Vec<Case> {
-//   vec![
-//     Case::new("Average")
-//       .with_generators(vec![generate_random])
-//       .iterations(100)
-//       .plots(vec![
-//         Plot::new(|x| 0.25 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Best")
-//       .with_generators(vec![generate_sorted])
-//       .iterations(1)
-//       .plots(vec![
-//         Plot::new(|x| x as f64, RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Worst")
-//       .with_generators(vec![generate_reversed])
-//       .iterations(1)
-//       .plots(vec![
-//         Plot::new(|x| 0.5 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Dupes")
-//       .with_generators(vec![generate_with_dupes])
-//       .iterations(25)
-//       .plots(vec![
-//         Plot::new(|x| 0.25 * x as f64 * x as f64, RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Nearly-sorted")
-//       .with_generators(vec![|i| generate_nearly_sorted(i, 100)])
-//       .iterations(25)
-//       .plots(vec![
-//         Plot::new(|x| 25.74 * x as f64, RGBColor(255, 0, 0), "Expected")
-//       ]),
-//   ]
-// }

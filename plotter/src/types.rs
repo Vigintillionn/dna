@@ -16,7 +16,7 @@ pub type PlotFunction = Box<dyn Fn(usize) -> f64 + Send + Sync>;
 pub type AlgorithmFunction<T> = Box<dyn Fn(&mut [T]) -> f64 + Send + Sync>;
 pub type GeneratorFunction<T> = Box<dyn Fn(usize) -> Vec<T> + Send + Sync>;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct AlgorithmResult {
   pub data: Vec<(usize, Vec<f64>)>,
   pub name: String,
@@ -206,7 +206,7 @@ impl<T: Ord + Copy> Algorithm<T> {
 
       let case_result: Vec<(usize, Vec<f64>)> = (low..=high).step_by(case.step_size).into_iter().map(|i| {
         let results: Vec<f64> = (0..case.iterations)
-          .into_par_iter()
+          .into_par_iter() // into_par_iter
           .map(|_| {
             let mut arr = (generator)(i);
             (self.func)(&mut arr[..])

@@ -1,17 +1,44 @@
 // use heap_tree::rbtree::RBTree;
 use heap_tree::rbtree::Llrb;
-use plotter::{types::{Case, RGBColor, Plot}, functions::generators::generate_random, test_sorting_algorithm};
+use plotter::{types::{Case, Plot, Combinator, Algorithm, RED, BLACK, BLUE}, functions::generators::generate_random};
 
 fn main() {
-  test_sorting_algorithm(
-    "Balance 2", 
-    vec![
-      (Box::new(create_tree_and_insert), RGBColor(0, 0, 255), "Red/Black ratio * 1000"),
-      (Box::new(calculate_blacks), RGBColor(0, 0, 0), "# Black links"),
-      (Box::new(calculate_reds), RGBColor(255, 0, 0), "# Red links")
-    ],  
-    get_cases()
-  );
+  Combinator::new("Balance 2")
+    .add_algorithms(vec![
+      Algorithm::new("Red Black Ratio", create_tree_and_insert)
+      .with_case(
+        Case::new("Average")
+        .with_generator(generate_random)
+        .iterations(100)
+        .plots(vec![
+          Plot::new(|_| 333.0 as f64, BLUE, "0.75n")
+        ])
+        .set_color(BLUE),
+      ),
+      Algorithm::new("# Black Links", calculate_blacks)
+        .with_case(
+          Case::new("Average")
+          .with_generator(generate_random)
+          .iterations(100)
+          .plots(vec![
+            Plot::new(|x| 0.75 * x as f64, BLACK, "0.75n")
+          ])
+          .set_color(BLACK),
+        ),
+      Algorithm::new("# Red Links", calculate_reds)
+      .with_case(
+        Case::new("Average")
+        .with_generator(generate_random)
+        .iterations(100)
+        .plots(vec![
+          Plot::new(|x| 0.25 * x as f64, RED, "0.75n")
+        ])
+        .set_color(RED),
+      ),
+    ])
+    .run()
+    .plot("balance-2")
+    .unwrap();
 }
 
 fn create_tree_and_insert<T: Ord + Copy>(arr: &mut [T]) -> f64 {
@@ -56,17 +83,4 @@ fn calculate_reds<T: Ord + Copy>(arr: &mut [T]) -> f64 {
   }
 
   tree.iter().count() as f64 - tree.n_blacks() as f64
-}
-
-fn get_cases() -> Vec<Case> {
-  vec![
-    Case::new("Black Red")
-      .with_generators(vec![generate_random])
-      .iterations(100)
-      .plots(vec![
-        Plot::new(|x| 0.75 * x as f64, RGBColor(0, 0, 0), "0.75n"),
-        Plot::new(|x| 0.25 * x as f64, RGBColor(255, 0, 0), "0.25n"),
-        Plot::new(|_| 333.0 as f64, RGBColor(0, 0, 255), "333"),
-      ])
-  ]
 }

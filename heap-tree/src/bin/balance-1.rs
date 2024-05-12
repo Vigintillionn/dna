@@ -1,14 +1,21 @@
 // use heap_tree::rbtree::RBTree;
 use heap_tree::rbtree::Llrb;
-use plotter::{types::{Plot, Case, RGBColor}, functions::generators::generate_random, test_sorting_algorithm};
+use plotter::{types::{Plot, Case, Algorithm, RED, GREEN}, functions::generators::generate_random};
 
 fn main() {
-  test_sorting_algorithm(
-    "Balance 1", 
-    vec![
-      (Box::new(create_tree_and_insert), RGBColor(0, 0, 255), "Tree depth")
-    ], 
-    get_cases());
+  Algorithm::new("Balance 1", create_tree_and_insert)
+    .with_case(
+      Case::new("Left Leaning Red Black")
+        .with_generator(generate_random)
+        .iterations(100)
+        .plots(vec![
+          Plot::new(|x| (x as f64).log2(), RED, "Upper bound"),
+          Plot::new(|x| (x as f64).log2() / (3.0 as f64).log2(), GREEN, "Lower bound")
+        ])
+    )
+    .run()
+    .plot_seperate(vec!["balance-1-llrb"])
+    .unwrap();
 }
 
 fn create_tree_and_insert<T: Ord + Copy>(arr: &mut [T]) -> f64 {
@@ -18,16 +25,4 @@ fn create_tree_and_insert<T: Ord + Copy>(arr: &mut [T]) -> f64 {
     tree.set(*i, *i);
   }
   tree.black_depth() as f64
-}
-
-fn get_cases() -> Vec<Case> {
-  vec![
-    Case::new("Black Red")
-      .with_generators(vec![generate_random])
-      .iterations(100)
-      .plots(vec![
-        Plot::new(|x| (x as f64).log2(), RGBColor(255, 0, 0), "Upper bound"),
-        Plot::new(|x| (x as f64).log2() / (3.0 as f64).log2(), RGBColor(0, 255, 0), "Lower bound")
-      ]),
-  ]
 }

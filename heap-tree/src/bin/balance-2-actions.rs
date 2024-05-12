@@ -1,16 +1,21 @@
 use heap_tree::rbtree::Llrb;
-use plotter::{test_sorting_algorithm, types::{RGBColor, Case}, functions::generators::generate_random};
+use plotter::{types::{Case, Combinator, Algorithm, RED, GREEN, BLUE, BLACK}, functions::generators::generate_random};
 
 fn main() {
-  test_sorting_algorithm(
-    "Balance 2", 
-    vec![
-      (Box::new(ratio_lrot), RGBColor(255, 0, 0), "Left Rotations"),
-      (Box::new(ratio_rrot), RGBColor(0, 0, 0), "Right Rotations"),
-      (Box::new(ratio_flips), RGBColor(0, 0, 255), "Color Flips"),
-      (Box::new(ratio_total), RGBColor(0, 255, 0), "Total Actions")
-    ], get_cases()
-  )
+  Combinator::new("Balance 2")
+    .add_algorithms(vec![
+      Algorithm::new("Left Rotations", ratio_lrot)
+        .with_case(Case::new("Actions").with_generator(generate_random).iterations(100).set_color(RED)),
+      Algorithm::new("Right Rotations", ratio_rrot)
+        .with_case(Case::new("Actions").with_generator(generate_random).iterations(100).set_color(BLACK)),
+      Algorithm::new("Color Flips", ratio_flips)
+        .with_case(Case::new("Actions").with_generator(generate_random).iterations(100).set_color(BLUE)),
+      Algorithm::new("Total Actions", ratio_total)
+        .with_case(Case::new("Actions").with_generator(generate_random).iterations(100).set_color(GREEN))
+    ])
+    .run()
+    .plot("balance-2-actions")
+    .unwrap();
 }
 
 fn ratio_lrot(array: &mut [i32]) -> f64 {
@@ -51,12 +56,4 @@ fn ratio_total(array: &mut [i32]) -> f64 {
   }
 
   ((tree.flip_count + tree.rrotate_count + tree.lrotate_count) as f64 / array.len() as f64) * 1000.0
-}
-
-fn get_cases() -> Vec<Case> {
-  vec![
-    Case::new("Actions")
-      .iterations(100)
-      .with_generators(vec![generate_random])
-  ]
 }

@@ -1,6 +1,7 @@
 use plotters::prelude::*;
 use crate::types::{Plot, AlgorithmResult};
 
+#[allow(dead_code)]
 pub fn plot_case(
   results: Vec<AlgorithmResult>, //Vec<(Vec<(usize, Vec<f64>)>, RGBColor, &str)>,
   title: &str,
@@ -49,19 +50,21 @@ pub fn plot_case(
   }
   let max_y = max_candidates.iter().copied().fold(f64::NEG_INFINITY, |max, x| x.max(max));
 
+  // let caption = &format!("Min, max and average of {} measurements", iterations)[..];
+
   // Create a chart with the title and the maximum x and y values
   let mut chart = ChartBuilder::on(&root)
-    .caption(format!("Min, max and average of {} measurements", iterations), ("sans-serif", 40).into_font())
+    // .caption(caption, ("sans-serif", 40).into_font())
     .margin(25)
     .x_label_area_size(40)
     .y_label_area_size(40)
-    .build_cartesian_2d(0..max_x, 0.0..max_y)?;
+    .build_cartesian_2d(0..max_x, 2.0..max_y)?;
 
   // Book keeping
   chart
     .configure_mesh()
-    .x_labels(10)
-    .y_labels(10)
+    .x_labels(20)
+    .y_labels(20)
     .x_desc("Array Length")
     .y_desc("Measurements")
     .axis_desc_style(("sans-serif", 20))
@@ -83,10 +86,10 @@ pub fn plot_case(
     .draw_series(
       r.data.into_iter().map(|(x, y)| {
         let yl = y.iter().copied().reduce(|a, b| a.min(b)).unwrap_or(0.0);
-        let ym = &y[y.len() / 2];
+        let ym: f64 = y.iter().sum::<f64>() / y.len() as f64;//&y[y.len() / 2];
         let yh = y.iter().copied().reduce(|a, b| a.max(b)).unwrap_or(0.0);
 
-        return ErrorBar::new_vertical(x, yl, *ym, yh, color.filled(), 4)
+        return ErrorBar::new_vertical(x, yl, ym, yh, color.filled(), 4)
       }),
     )?.label(r.name).legend(move |(x, y)| ErrorBar::new_vertical(x + 10, y - 5, y, y + 5, color.filled(), 4));
   }

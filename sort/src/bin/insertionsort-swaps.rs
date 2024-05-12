@@ -1,4 +1,4 @@
-use plotter::types::{Case, Plot, RGBColor, Algorithm, RED};
+use plotter::types::{Case, Plot, Algorithm, RED};
 use sort::selectionsort::sort;
 use plotter::functions::generators::{generate_random, generate_reversed, generate_sorted};
 

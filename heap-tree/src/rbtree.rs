@@ -21,22 +21,6 @@ pub struct Depth {
 }
 
 impl Depth {
-    pub(crate) fn new() -> Depth {
-        Default::default()
-    }
-
-    pub(crate) fn sample(&mut self, depth: usize) {
-        self.samples += 1;
-        self.total += depth;
-        if self.min == 0 || depth < self.min {
-            self.min = depth
-        }
-        if self.max == 0 || depth > self.max {
-            self.max = depth
-        }
-        self.depths[depth] += 1;
-    }
-
     /// Return number of leaf-nodes sampled in [`Llrb`] instance.
     pub fn samples(&self) -> usize {
         self.samples
@@ -730,17 +714,6 @@ where
         })
     }
 
-    // clone and detach this node from the tree.
-    fn clone_detach(&self) -> Node<K, V> {
-        Node {
-            key: self.key.clone(),
-            value: self.value.clone(),
-            black: self.black,
-            left: None,
-            right: None,
-        }
-    }
-
     #[inline]
     fn left_deref(&self) -> Option<&Node<K, V>> {
         self.left.as_ref().map(Deref::deref)
@@ -800,16 +773,6 @@ impl Stats {
             blacks: Default::default(),
             depths: Default::default(),
         }
-    }
-
-    #[inline]
-    fn set_blacks(&mut self, blacks: usize) {
-        self.blacks = Some(blacks)
-    }
-
-    #[inline]
-    fn set_depths(&mut self, depths: Depth) {
-        self.depths = Some(depths)
     }
 
     /// Return number entries in [`Llrb`] instance.

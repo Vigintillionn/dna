@@ -1,18 +1,9 @@
 use plotter::types::{Case, Plot, RGBColor, Algorithm};
 use sort::mergesort::sort;
-use plotter::test_sorting_algorithm;
-use plotter::functions::generators::{generate_random, generate_sorted, generate_interleaved, generate_reversed};
+use plotter::functions::generators::{generate_random, generate_sorted, generate_interleaved};
 
 fn main() {
-  // test_sorting_algorithm(
-  //   "Merge Sort",
-  //   vec![
-  //     (Box::new(sort), RGBColor(0, 0, 255), "Measured")
-  //   ], 
-  //   get_cases()
-  // )
-
-  Algorithm::new("Merge Sort", sort)
+  Algorithm::new("Merge Sort", |arr| sort(arr, true))
     .with_cases(vec![
       Case::new("Average")
         .with_generator(generate_random)
@@ -27,39 +18,14 @@ fn main() {
           Plot::new(|x| 0.5 * x as f64 * (x as f64).log2(), RGBColor(255, 0, 0), "Expected")
         ]),
       Case::new("Worst")
-        .with_generator(generate_reversed)
+        .with_generator(generate_interleaved)
         .iterations(1)
         .plots(vec![
           Plot::new(|x| x as f64 * (x as f64).log2(), RGBColor(255, 0, 0), "Expected")
         ]),
     ])
     .run()
-    .plot("mergesort")
+    .plot_seperate(vec!["mergesort-avg", "mergesort-best", "mergesort-worst"])
     .unwrap();
 
 }
-
-// fn get_cases() -> Vec<Case> {
-//   vec![
-//     Case::new("Average")
-//       .with_generators(vec![generate_random])
-//       .iterations(100)
-//       .plots(vec![
-//         Plot::new(|x| 0.85 * x as f64 * (x as f64).log2(), RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Best")
-//       .with_generators(vec![generate_sorted])
-//       .iterations(1)
-//       .plots(vec![
-//         Plot::new(|x| 0.5 * x as f64 * (x as f64).log2(), RGBColor(255, 0, 0), "Expected")
-//       ]),
-
-//     Case::new("Worst")
-//       .with_generators(vec![generate_interleaved])
-//       .iterations(1)
-//       .plots(vec![
-//         Plot::new(|x| x as f64 * (x as f64).log2(), RGBColor(255, 0, 0), "Expected")
-//       ]),
-//   ]
-// }
