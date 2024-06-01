@@ -230,6 +230,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "dynprog"
+version = "0.1.0"
+dependencies = [
+ "plotter",
+ "rand",
+]
+
+[[package]]
 name = "either"
 version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
